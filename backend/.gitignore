@@ -1,0 +1,12 @@
+.env
+.test.env
+.env.*
+
+/node_modules
+/.vscode
+.vscode/*
+bun.lockb
+.npm*
+todo.MD
+dist/
+build/ 

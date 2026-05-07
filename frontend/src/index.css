@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+ --font-jost: "Jost", 'sans-serif';
+ --color-text: #0b1815;
+ --color-background: #f4fbfa;
+ --color-primary: #246053;
+ --color-secondary: #7ed3c2;
+ --color-accent: #30a18a;
+ --color-text-dark: #e7f4f1;
+ --color-background-dark: #040a09;
+ --color-primary-dark: #9ddacd;
+ --color-secondary-dark: #2c806f;
+ --color-accent-dark: #5fcfb9;
+ --color-error: #a13047;
+ --color-error-dark: #cf5f75;
+}
+
+html {
+  @apply bg-background;
+}
+
+html.dark {
+  @apply bg-background-dark;
+}
