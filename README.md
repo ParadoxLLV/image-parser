@@ -17,22 +17,22 @@ Follow the steps below to run Image Parser on a local machine
 To install the required dependencies, run
 
 ```bash
-  bun run build
+  pnpm i
 ```
 
 
 ## 2. Finishing off
 
-Finally, to start the project in a new browser window, run
+Finally, to start the project in a new browser window, navigate to the frontend folder and run
 
 ```bash
-  bun run dev
+  pnpm dev
 ```
 
-To test out every feature this app has to offer, you will also have to run the commands below
+To test out every feature this app has to offer, you will also have to complete the actions below
 
 ## Environment variables
-This app includes quite a few environment variables that need to be filled in so it works properly
+This app includes quite a few environment variables that need to be filled in so it works properly (put this inside the .env file inside the root folder)
 
 ```bash
 PORT - port of the backend server
@@ -63,6 +63,12 @@ GITHUB_CLIENT_SECRET - OAuth client secret used by the backend to exchange autho
 GITHUB_REDIRECT_URI - backend URL where GitHub redirects users after successful authentication
 ```
 
+
+And for tests, create a new file called .test.env inside the root folder and assign this variable:
+```bash
+PGCONNECTIONSTRING - A connection string for a seperate database used for testing purposes. I recommend to use pgAdmin4 for creating databases, but it's for you to decide
+```
+
 ## Setting up Redis
 If you are on Windows and Redis is not available natively, you can use WSL or Docker in order for this to work. 
 Open up Ubuntu and run these commands
@@ -83,6 +89,6 @@ stripe login
 ```
 A prompt will appear asking if you trust the source, click Allow access. After that, go back to the terminal and run
 ```bash
-bun run stripe-forward
+pnpm stripe-forward
 ```
 Now you should be able to receive various Stripe events that come from operations such as successful payments, subscription updates and more.
