@@ -1,4 +1,3 @@
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f8a48920-d4c1-432d-96a0-b568a69e80a7" />
 # Image Parser
 
 An app for converting images to different formats. Has multiple different subscription plans, one-time purchases and more.
