@@ -1,13 +1,13 @@
-
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f8a48920-d4c1-432d-96a0-b568a69e80a7" />
 # Image Parser
 
 An app for converting images to different formats. Has multiple different subscription plans, one-time purchases and more.
 ## Showcase
-<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/056546f5-482c-4523-81f8-a7bc81ed25db" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f417ae49-ceca-48b6-9a21-13781b8b711e" />
 
-<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/89cd05dc-99c6-482c-82c5-adc2bb92caa7" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/9a89428c-7806-4704-9597-64675e07b107" />
 
-<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/70b6e8c2-a6b7-4033-b08d-2cf169605e63" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/6b3c4cd9-4ba9-45d5-9429-4eaa5f698d3e" />
 
 # Setup
 Follow the steps below to run Image Parser on a local machine
