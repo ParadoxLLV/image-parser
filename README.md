@@ -1,6 +1,19 @@
 # Image Parser
 
 An app for converting images to different formats. Has multiple different subscription plans, one-time purchases and more.
+
+## Tech Stack
+
+**Client:** React, Redux, TailwindCSS, Class Variance Authority (cva), zod and FingerprintJS
+
+**Server:** Node, Express, Stripe integration, bcrypt, Redis, Sharp, Multer
+
+**Tests:** Supertest and Vitest
+
+**Database:** Local postgres database running in pgAdmin4
+
+JWTs and OAuth are used for authentificating real users, meanwhile guest users get stored in a redis database.
+
 ## Showcase
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f417ae49-ceca-48b6-9a21-13781b8b711e" />
 
@@ -91,3 +104,10 @@ A prompt will appear asking if you trust the source, click Allow access. After t
 pnpm stripe-forward
 ```
 Now you should be able to receive various Stripe events that come from operations such as successful payments, subscription updates and more.
+
+## Running tests
+This project has both unit and integration tests. To run unit tests navigate into the frontend folder, for integration tests navigate into the backend folder and run this command
+```bash
+pnpm test
+```
+After some time you should see the results of those tests. 
