@@ -10,7 +10,10 @@ import type { PoolClient } from 'pg';
 import type { UserSchema } from '../../../../frontend/src/helpers/Schemas/userSchema';
 import { redisClient } from '../../../app';
 import { stripe } from '../../helpers/stripe';
-import type { lineItemType } from '../../../../frontend/src/lib/types';
+import type {
+  lineItemType,
+  subscriptionType,
+} from '../../../../frontend/src/lib/types';
 import type Stripe from 'stripe';
 import { getStripeCustomerIdByUserId } from '../../helpers/getStripeCustomerIdByUserId';
 import { getUserSubProductInfo } from '../../helpers/getUserSubProductInfo';
@@ -24,7 +27,11 @@ export const removeCredits = async (
   client?: PoolClient,
 ) => {
   try {
-    if (amount < 0)
+    if (user.credits <= 0) {
+      throw new Error(
+        "User doesn't have enough credits for converting an image.",
+      );
+    }
     if (user.isGuest) {
       console.log(`guest:${fingerprint}`);
       await redisClient.hIncrBy(`guest:${fingerprint}`, 'credits', -amount);
@@ -36,7 +43,9 @@ export const removeCredits = async (
       if (result?.rowCount === 0) {
         throw new Error('Logged in user not found');
       } else {
-        console.log(result.rows[0]);
+        console.log(
+          `Removed ${amount} credits. User now has ${result.rows[0]} credits.`,
+        );
       }
     }
     user.credits -= amount;
@@ -51,15 +60,15 @@ export const removeCreditsRoute = async (req: Request, res: Response) => {
   try {
     const { amount } = req.body;
     await removeCredits(req.user, amount, req.headers.fingerprint, client);
-    res.status(200).json({message: `successfully removed ${amount} credits}`})
+    res
+      .status(200)
+      .json({ message: `successfully removed ${amount} credits}` });
   } catch (error) {
     console.log(error);
-    res
-      .status(400)
-      .json({
-        message: 'Something went wrong in removeCreditsRoute',
-        error: error,
-      });
+    res.status(400).json({
+      message: 'Something went wrong in removeCreditsRoute',
+      error: error,
+    });
     return;
   } finally {
     client.release();
@@ -151,6 +160,21 @@ export const checkoutSession = async (req: Request, res: Response) => {
         [customer.id, req.user.id],
       );
     }
+
+    if (mode === 'subscription') {
+      const currentSub = await getUserSubProductInfo(customerId, client);
+      if (currentSub?.name && currentSub.name !== 'free') {
+        return res.status(400).json({
+          error: 'User already has a subscription',
+          subscription: currentSub?.name as subscriptionType,
+        });
+      } else {
+        console.log(
+          '[ CHECKOUT SESSION CHECK ] USER DOESNT HAVE AN ACTIVE SUBSCRIPTION',
+        );
+      }
+    }
+
     const currentSubscription = req.user.subscription;
     console.log('CURRENT SUBSCRIPTION', currentSubscription);
     let coupon;
@@ -171,15 +195,6 @@ export const checkoutSession = async (req: Request, res: Response) => {
         break;
     }
     console.log('Coupon', coupon);
-    if (mode === 'subscription') {
-      const currentSub = await getUserSubProductInfo(customerId, client);
-      if (currentSub?.name) {
-        return res.status(400).json({
-          error: 'User already has a subscription',
-          subscription: currentSub.name,
-        });
-      }
-    }
 
     const session = await stripe.checkout.sessions.create({
       line_items: [
@@ -205,7 +220,7 @@ export const checkoutSession = async (req: Request, res: Response) => {
       success_url: `${process.env.FRONTEND_URL}/stripe-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.FRONTEND_URL}/stripe-fail`,
     });
-
+    console.log(`CHECKOUT SESSION URL : ${session.url}`);
     res.json({ url: session.url });
   } catch (error) {
     console.error('Error in checkoutSession:', error);
@@ -252,7 +267,7 @@ export const getCheckoutInfo = async (req: Request, res: Response) => {
     );
 
     const amount = sessionData.amount_total;
-    const email = sessionData.customer_email;
+    const email = sessionData.customer_details?.email;
 
     console.log(`amount ${amount}`);
     console.log(`email ${email}`);

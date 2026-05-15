@@ -117,12 +117,13 @@ describe('Tests for the registering and logging in of a user', () => {
       const userRes = await request(app)
         .post('/api/auth/register')
         .send({ email: 'testEmail@gmail.com', password: 'testPass123!!DFE#%' });
+      console.log(`got status: ${userRes.status}`);
       expect(userRes.status).toBe(200);
       authCookies = userRes.headers['set-cookie'] as unknown as string[];
       expect(authCookies.some((c) => c.startsWith('accessCookie'))).toBe(true);
       expect(authCookies.some((c) => c.startsWith('refreshCookie'))).toBe(true);
     });
-  
+
     it('Logs in a user and creates refresh and access cookies', async () => {
       const userRes = await request(app)
         .post('/api/auth/login')
@@ -196,7 +197,7 @@ describe('Tests for the registering and logging in of a user', () => {
       ]);
       await redisClient.del(`guest:${fingerprint}`);
     });
-  
+
     it('throws a LoginAccountDoesntExist error when logging in because of an email that doesnt exist in the database', async () => {
       const res = await request(app)
         .post('/api/auth/login')

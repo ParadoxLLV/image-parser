@@ -14,7 +14,7 @@ const PricingCard = ({
   seperator,
 }: PricingCardsProps) => {
   return (
-    <div className="dark:hover:bg-accent-dark/5 transition-all duration-300 w-full grow flex flex-col p-3 rounded-lg border-2 border-accent gap-3 dark:border-accent-dark justify-between">
+    <div className="dark:hover:bg-accent-dark/5 hover:bg-accent/5 transition-all duration-300 w-full grow flex flex-col p-3 rounded-lg border-2 border-accent gap-3 dark:border-accent-dark justify-between">
       <h1 className="text-3xl text-text dark:text-text-dark">{title}</h1>
       <span className="text-lg text-text dark:text-text-dark text-center w-full">
         {description}

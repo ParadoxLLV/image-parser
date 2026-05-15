@@ -40,7 +40,7 @@ const Breadcrumb = () => {
   }, [breadcrumbState]);
 
   return (
-    <div className="sticky top-0 h-full">
+    <div className={`${isClosed ? 'hidden' : 'mb-4 sticky top-0'}`}>
       <AnimatePresence>
         {cleanPathnames.length > 0 && !isClosed && (
           <motion.div

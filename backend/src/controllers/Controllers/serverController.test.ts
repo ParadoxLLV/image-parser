@@ -14,12 +14,8 @@ describe('Tests for image format conversion and removing of credits', () => {
     ]);
     await redisClient.del(`guest:${fingerprint}`);
 
-    await request(app)
-      .post('/api/auth/instantiateUser')
-      .set('fingerprint', fingerprint);
-    const res = await request(app)
-      .post('/api/auth/register')
-      .send({ email: 'testEmail@gmail.com', password: 'testPass123!!DFE#%' });
+    await request(app).post('/api/auth/instantiateUser').set('fingerprint', fingerprint);
+    const res = await request(app).post('/api/auth/register').send({ email: 'testEmail@gmail.com', password: 'testPass123!!DFE#%' });
     authCookies = res.headers['set-cookie'] as unknown as string[];
   });
 
@@ -28,6 +24,7 @@ describe('Tests for image format conversion and removing of credits', () => {
       'testEmail%@gmail.com',
     ]);
     await redisClient.del(`guest:${fingerprint}`);
+    console.log(await redisClient.exists(`guest:${fingerprint}`));
   });
 
   describe('Success cases', () => {

@@ -6,7 +6,7 @@ import { useAppSelector } from '../../Redux/reduxHooks/reduxHooks';
 export const pay = async (
   mode: 'payment' | 'subscription',
   priceId: string,
-  fingerprint: string,
+  fingerprint: string | null
 ) => {
   try {
     const data = {

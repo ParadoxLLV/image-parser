@@ -8,7 +8,6 @@ export const subscriptions = [
       'Monthly Credits': 250,
       'File upload limit': MAX_FILES_PLUS,
       'Discounts on credits': false,
-      'Disabled Ads': true,
     },
     description:
       'Experience the basic functionality of the app with the added bonus of extra monthly credits.',
@@ -20,7 +19,6 @@ export const subscriptions = [
       'Monthly Credits': 500,
       'File upload limit': MAX_FILES_PREMIUM,
       'Discounts on credits': true,
-      'Disabled Ads': true,
     },
     description:
       'everything in Plus with more monthly credits aswell as other features',
@@ -32,7 +30,6 @@ export const subscriptions = [
       'Monthly Credits': 1000,
       'File upload limit': MAX_FILES_PRO,
       'Discounts on credits': true,
-      'Disabled Ads': true,
     },
     description:
       'Everything in all the other plans with more credits and bigger upload limits.',

@@ -8,7 +8,7 @@ interface ContainerProps {
 
 const Container = ({children, className}: ContainerProps) => {
   return (
-    <div className={`${cn(className, `px-4 lg:px-6 dark:bg-background-dark bg-background flex-grow flex flex-col`)}`}>
+    <div className={`${cn(className, `px-4 lg:px-6 dark:bg-background-dark bg-background flex flex-col`)}`}>
         {children}
     </div>
   )

@@ -7,7 +7,7 @@ type PricingCardEntryProps = React.HTMLAttributes<HTMLDivElement> & {
 
 const PricingCardEntry = ({ entry }: PricingCardEntryProps) => {
   return (
-    <div className="w-full border-2 border-white/15 rounded-lg p-2">
+    <div className="w-full border-2 dark:border-white/10 border-black/10 rounded-lg p-2">
       {Object.entries(entry).map(([feature, value]) => (
         <div
           key={feature}

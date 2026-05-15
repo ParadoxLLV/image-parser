@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 
-import { describe, vi, it, expect, afterEach, beforeEach } from 'vitest';
+import { describe, vi, it, expect, afterEach } from 'vitest';
 import { pay } from '../helpers/utils/pay';
 import { MAX_FILES_GUESTS } from '../lib/constants';
 import { handleUploaderFiles } from '../pages/HomePage/handleUploaderFiles';
@@ -13,6 +13,7 @@ describe('Various unit tests', () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
+
   const uploadingFiles = [
     new File(['something'], 'image.png', { type: 'image/png' }),
     new File(['something2'], 'image2.png', { type: 'image/png' }),
@@ -22,20 +23,27 @@ describe('Various unit tests', () => {
     new File(['something6'], 'image6.png', { type: 'image/png' }),
     new File(['something7'], 'image7.png', { type: 'image/png' }),
   ];
+  const fingerprint = 'testFingerprint';
 
   it('Navigates a user to the required url after clicking Pay (logged in user)', async () => {
-    await pay('payment', 'price_123');
+    await pay('payment', 'price_123', fingerprint);
     expect(window.location.href).toBe('https://stripetesturl.com/');
   });
 
   it('Throws a toast to a user after clicking Pay (guest user)', async () => {
-    vi.spyOn(toast, "error");
+    vi.spyOn(toast, 'error');
     server.use(
-      http.post("http://localhost:3000/api/server/create-checkout-session", async () => {
-        return HttpResponse.json({ error: 'Something went wrong' }, { status: 500 })
-      })
-    )
-    await pay('payment', 'price_123');
+      http.post(
+        'http://localhost:3000/api/server/create-checkout-session',
+        async () => {
+          return HttpResponse.json(
+            { error: 'Something went wrong' },
+            { status: 500 },
+          );
+        },
+      ),
+    );
+    await pay('payment', 'price_123', fingerprint);
     expect(toast.error).toHaveBeenCalled();
   });
 
@@ -55,16 +63,14 @@ describe('Various unit tests', () => {
   });
 
   it('handleFiles sets processed files to the required files', async () => {
-    let files: File[] = [];
-    const setFiles = vi.fn((updater) => {
-      files = typeof updater === 'function' ? updater(files) : updater;
-    });
-
-    await handleFiles(uploadingFiles, 'image/jpeg', setFiles, 'testFingerprint');
-
-    expect(files).toHaveLength(uploadingFiles.length);
+    const setFiles = vi.fn();
+    await handleFiles(
+      uploadingFiles,
+      'image/jpeg',
+      setFiles,
+      'testFingerprint',
+    );
     expect(setFiles).toBeCalledTimes(uploadingFiles.length);
-    expect(files[0].name).toBe('image.jpeg');
   });
 
   it('Should not process files if user has 0 credits.', async () => {

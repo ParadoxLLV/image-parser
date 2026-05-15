@@ -8,10 +8,11 @@ import { Outlet, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
 import { useAppSelector } from '../../Redux/reduxHooks/reduxHooks';
 import toast from 'react-hot-toast';
-import type { creditType, subscriptionType } from '../../lib/types';
+import type { AuthUser, creditType, subscriptionType } from '../../lib/types';
 import { findCreditInfo } from '../../helpers/utils/findCreditInfo';
 import findSubscriptionInfo from '../../helpers/utils/findSubscriptionInfo';
 import { pay } from '../../helpers/utils/pay';
+import type { UserSchema } from '../../helpers/Schemas/userSchema';
 
 const Pricing = () => {
   const [active, setActive] = useState('Monthly');
@@ -72,12 +73,20 @@ const Pricing = () => {
                   if (user.isGuest) {
                     toast.error('Either login or register to buy items');
                     navigate('/register');
+                  } else if (
+                    (user.user as UserSchema).subscription !== 'free'
+                  ) {
+                    toast.error('To update your subscription go to settings.')
                   } else {
                     const subscriptionInfo = findSubscriptionInfo(
                       subscription.name as subscriptionType,
                     );
                     if (subscriptionInfo) {
-                      pay('subscription', subscriptionInfo.priceId, user.fingerprint!);
+                      pay(
+                        'subscription',
+                        subscriptionInfo.priceId,
+                        user.fingerprint!,
+                      );
                     }
                   }
                 }}
@@ -96,7 +105,7 @@ const Pricing = () => {
                   <h1>{credit.credits} Credits</h1>
                 </div>
               }
-              description="250 Credits to use for services based on your subscription"
+              description={`${credit.credits} credits to use for conversions`}
             >
               <CustomButton
                 onClick={() => {
@@ -108,7 +117,7 @@ const Pricing = () => {
                       credit.name as creditType,
                     );
                     if (creditInfo) {
-                      pay('payment', creditInfo.priceId);
+                      pay('payment', creditInfo.priceId, user.fingerprint);
                     }
                   }
                 }}

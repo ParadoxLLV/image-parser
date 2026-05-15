@@ -10,59 +10,80 @@ import type { checkoutInfoType, lineItemType } from '../../lib/types';
 import { CustomButton } from '../../components/CustomButton';
 import { useEffect, useState } from 'react';
 import { IoCheckmarkCircleOutline } from 'react-icons/io5';
-import { redirect } from 'react-router';
+import type { UserSchema } from '../../helpers/Schemas/userSchema';
 
 const StripeSuccess = () => {
   const params = new URLSearchParams(window.location.search);
   const checkoutUrl = params.get('session_id');
+  console.log(`CHECKOUT URL FOUND IN STRIPE SUCCESS PAGE: ${checkoutUrl}`);
   const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.user.user);
-  if (!user) {
-    redirect('');
-  }
+  const user = useAppSelector((state) => state.user);
 
   const [purchaseInfo, setPurchaseInfo] = useState<checkoutInfoType | null>(
     null,
   );
   const [productsInfo, setProductsInfo] = useState<lineItemType[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log('STRIPESUCCESS');
-    console.log(checkoutUrl);
-    const fetch = async () => {
-      const response = await axios.post(
-        'http://localhost:3000/api/server/getCheckoutSessionInfo',
-        { checkoutUrl },
-        {
-          withCredentials: true,
-        },
-      );
-      if (response.data.checkoutData && productsInfo.length == 0) {
-        const dataResponse = response.data.checkoutData;
-        setPurchaseInfo({
-          amount: dataResponse.amount,
-          email: dataResponse.email,
-        });
+    const fetchSession = async () => {
+      try {
+        const response = await axios.post(
+          'http://localhost:3000/api/server/getCheckoutSessionInfo',
+          { checkoutUrl },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              fingerprint: user.fingerprint,
+            },
+            withCredentials: true,
+          },
+        );
+        console.log(`fetchSession response:`);
+        console.log(response);
 
-        dataResponse.products.map((product: lineItemType) => {
-          setProductsInfo((prev) => [...prev, product]);
-        });
-      } else if (response.data.err) {
-        setPurchaseInfo(null);
+        const dataResponse = response.data.checkoutData;
+        if (dataResponse) {
+          setPurchaseInfo({
+            amount: dataResponse.amount,
+            email: dataResponse.email,
+          });
+          setProductsInfo(dataResponse.products);
+        }
+      } catch (err) {
+        console.error('Failed to fetch checkout session', err);
+      } finally {
+        setLoading(false);
       }
     };
-    fetch();
+
+    fetchSession();
   }, [checkoutUrl]);
 
+  useEffect(() => {
+    if (loading) return;
+    dispatch(
+      toggleModal(purchaseInfo ? 'checkoutSucceeded' : 'checkoutFailed'),
+    );
+  }, [loading, purchaseInfo, dispatch]);
+
+  if (loading) {
+    return (
+      <div className="w-full flex justify-center items-center">
+        <Spinner variant="reverseDefault" size="xxl" />
+      </div>
+    );
+  }
+
   if (purchaseInfo) {
-    dispatch(toggleModal('checkoutSucceeded'));
     return (
       <>
-        <CustomModal
-          modalName="checkoutSucceeded"
-        >
+        <CustomModal modalName="checkoutSucceeded">
           <div className="flex flex-col gap-2 rounded-md">
-            <div className="flex gap-2">
+            <h1 className="dark:text-white text-lg text-black text-center">
+              Thanks for purchasing, {(user.user as UserSchema).username}!
+            </h1>
+            <div className="flex gap-2 dark:text-white text-black">
               {productsInfo.map((product) => (
                 <div className="w-full flex dark:bg-teal-700/50 justify-center flex-col items-center border-accent/20 border-4 rounded-lg p-3">
                   <div className="w-full flex items-center justify-center py-2">
@@ -80,7 +101,7 @@ const StripeSuccess = () => {
                     </span>
                   </div>
                   <div className="w-11/12 sm:w-9/12 text-center">
-                    <span className="text-xl text-center">
+                    <span className="text-md text-center">
                       {product.description}
                     </span>
                   </div>
@@ -112,16 +133,13 @@ const StripeSuccess = () => {
         </div>
       </>
     );
-  } else {
-    dispatch(toggleModal('checkoutFailed'));
-    return (
-      <CustomModal modalName="checkoutFailed">
-        <div className="flex justify-center py-3">
-          <Spinner variant="reverseDefault" size="xxl"></Spinner>
-        </div>
-      </CustomModal>
-    );
   }
+
+  return (
+    <CustomModal modalName="checkoutFailed">
+      <p>Something went wrong with your payment.</p>
+    </CustomModal>
+  );
 };
 
 export default StripeSuccess;

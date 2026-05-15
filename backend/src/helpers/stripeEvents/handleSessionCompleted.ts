@@ -33,7 +33,14 @@ export const handleSessionCompleted = async (
           stripe_price_id,
           stripe_subscription_id,
           user_id
-        ) VALUES ($1,$2,$3,$4,$5,$6,$7)`,
+        ) VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT (stripe_subscription_id) DO UPDATE SET
+          current_period_start = EXCLUDED.current_period_start,
+          current_period_end = EXCLUDED.current_period_end,
+          status = EXCLUDED.status,
+          subscription_type = EXCLUDED.subscription_type,
+          stripe_price_id = EXCLUDED.stripe_price_id,
+          stripe_subscription_id = EXCLUDED.stripe_subscription_id
+          `,
         [
           new Date(subscription.items.data[0].current_period_start * 1000),
           new Date(subscription.items.data[0].current_period_end * 1000),
@@ -52,9 +59,14 @@ export const handleSessionCompleted = async (
       );
     } else {
       const lineItems = await stripe.checkout.sessions.listLineItems(event.id);
-      const creditAmount = getStripeCreditsByPriceId(lineItems.data[0].price?.id as string);
-      console.log("Credit amount: ", creditAmount);
-      await client.query("UPDATE users SET credits = credits + $1 WHERE stripe_customer_id = $2", [creditAmount, event.customer]);
+      const creditAmount = getStripeCreditsByPriceId(
+        lineItems.data[0].price?.id as string,
+      );
+      console.log('Credit amount: ', creditAmount);
+      await client.query(
+        'UPDATE users SET credits = credits + $1 WHERE stripe_customer_id = $2',
+        [creditAmount, event.customer],
+      );
     }
 
     await client.query(

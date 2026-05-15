@@ -9,7 +9,7 @@ const CustomLinkVariants = cva(
       variant: {
         default: 'hover:text-gray-500 dark:hover:text-white dark:text-neutral-300 text-neutral-700',
         green: 'hover:text-teal-800 dark:hover:text-teal-500 dark:text-teal-600 text-teal-900',
-        red: 'hover:text-red-800 dark:hover:text-red-500',
+        red: 'hover:text-red-800 dark:hover:text-red-500 dark:text-red-700 text-teal-400',
       },
       textSize: {
         sm: 'text-sm',

@@ -12,8 +12,8 @@ const Layout = () => {
       <Container>
         <Breadcrumb />
       </Container>
-      <Container>
-        <div className="flex-grow flex h-full flex-col transition duration-300">
+      <Container className='flex-grow'>
+        <div className="flex flex-col transition duration-300">
           <Outlet />
           <CookieAlert />
         </div>

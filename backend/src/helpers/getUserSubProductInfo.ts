@@ -12,7 +12,7 @@ export const getUserSubProductInfo = async (customerId: string, client: PoolClie
             return null;
         }
         const product = await stripe.products.retrieve(subscription.data[0].items.data[0].price.product as string);
-        console.log(`CURRENT USER SUBSCRIPTION: ${product.name}`);
+        console.log(`CURRENT USER SUBSCRIPTION IN STRIPE : ${product.name}`);
         return product;
     } catch (error) {
         console.error('Error in getUserSubInfo:', error);
