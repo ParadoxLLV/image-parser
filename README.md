@@ -81,6 +81,13 @@ And for tests, create a new file called .test.env inside the root folder and ass
 PGCONNECTIONSTRING - A connection string for a seperate database used for testing purposes. I recommend to use pgAdmin4 for creating databases, but it's for you to decide
 ```
 
+To run tests, navigate into your desired folder (backend or frontend) and run:
+```bash
+pnpm test
+```
+
+After some time you should see the results of those tests (because of known bug inside the integration test suite, one test might fail).
+
 ## Setting up Redis
 If you are on Windows and Redis is not available natively, you can use WSL or Docker in order for this to work. 
 Open up Ubuntu and run these commands
