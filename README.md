@@ -44,7 +44,7 @@ Finally, to start the project in a new browser window, navigate to the frontend 
 To test out every feature this app has to offer, you will also have to complete the actions below
 
 ## Environment variables
-This app includes quite a few environment variables that need to be filled in so it works properly (put this inside the .env file inside the root folder)
+This app includes quite a few environment variables that need to be filled in for the app to work properly (put this inside the .env file inside the root folder)
 
 ```bash
 PORT - port of the backend server
