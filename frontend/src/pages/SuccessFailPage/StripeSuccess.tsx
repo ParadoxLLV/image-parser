@@ -24,10 +24,12 @@ const StripeSuccess = () => {
   );
   const [productsInfo, setProductsInfo] = useState<lineItemType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchSession = async () => {
       try {
+        setLoading(true);
         const response = await axios.post(
           'http://localhost:3000/api/server/getCheckoutSessionInfo',
           { checkoutUrl },
@@ -51,6 +53,9 @@ const StripeSuccess = () => {
           setProductsInfo(dataResponse.products);
         }
       } catch (err) {
+        setError(
+          'Something went wrong while processing checkout items. The requested items should still be available for use.',
+        );
         console.error('Failed to fetch checkout session', err);
       } finally {
         setLoading(false);
@@ -58,22 +63,14 @@ const StripeSuccess = () => {
     };
 
     fetchSession();
-  }, [checkoutUrl]);
+  }, [checkoutUrl, user.fingerprint]);
 
   useEffect(() => {
-    if (loading) return;
+    if (loading || error) return;
     dispatch(
       toggleModal(purchaseInfo ? 'checkoutSucceeded' : 'checkoutFailed'),
     );
-  }, [loading, purchaseInfo, dispatch]);
-
-  if (loading) {
-    return (
-      <div className="w-full flex justify-center items-center">
-        <Spinner variant="reverseDefault" size="xxl" />
-      </div>
-    );
-  }
+  }, [loading, purchaseInfo, dispatch, error]);
 
   if (purchaseInfo) {
     return (
@@ -135,10 +132,18 @@ const StripeSuccess = () => {
     );
   }
 
+  if (error?.length > 0) {
+    return (
+      <CustomModal modalName="checkoutFailed">
+        <p>{error}</p>
+      </CustomModal>
+    );
+  }
+  
   return (
-    <CustomModal modalName="checkoutFailed">
-      <p>Something went wrong with your payment.</p>
-    </CustomModal>
+    <div className="w-full flex justify-center items-center">
+      <Spinner variant="reverseDefault" size="xxl" />
+    </div>
   );
 };
 

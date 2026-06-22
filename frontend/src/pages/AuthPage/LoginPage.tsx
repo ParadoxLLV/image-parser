@@ -57,12 +57,12 @@ const LoginPage = () => {
 
         if (axiosResult.status === 200) {
           await dispatch(getCurrentUser()).unwrap()
-          navigate(`http://localhost:5173/auth-success?successCause=${cause}`);
+          navigate(`http://localhost:5174/auth-success?successCause=${cause}`);
           toast(axiosResult.data.message);
         }
       } catch (error) {
         const cause = error.response?.data?.cause || 'UnsuccessfulLogin';
-        navigate(`http://localhost:5173/auth-fail?failCause=${cause}`);
+        navigate(`http://localhost:5174/auth-fail?failCause=${cause}`);
         console.error(error);
       }
     } else {

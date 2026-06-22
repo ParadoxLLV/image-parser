@@ -69,12 +69,12 @@ const RegisterPage = () => {
         const cause = result2.data.cause;
 
         if (result2.status === 200) {
-          navigate(`http://localhost:5173/auth-success?successCause=${cause}`);
+          navigate(`http://localhost:5174/auth-success?successCause=${cause}`);
           toast(result2.data.message);
         }
       } catch (error: any) {
         const cause = error.response?.data?.cause || 'UnsuccessfulRegister';
-        navigate(`http://localhost:5173/auth-fail?failCause=${cause}`);
+        navigate(`http://localhost:5174/auth-fail?failCause=${cause}`);
         console.error(error);
       }
     } else {

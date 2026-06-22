@@ -7,7 +7,10 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   test: {
     globals: true,
-    setupFiles: ['./src/tests/mocks/setup.ts']
+    setupFiles: ['./src/tests/mocks/setup.ts'],
   },
+  server: {
+    port: 5174,
+  },  
   plugins: [react(), tailwindcss()],
 });

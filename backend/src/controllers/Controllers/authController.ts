@@ -82,7 +82,7 @@ export const googleCallback = async (req: Request, res: Response) => {
       ]);
     } else if (userExists && type === 'register') {
       return res.redirect(
-        'http://localhost:5173/auth-fail?failCause=RegisterAccountExists',
+        `${process.env.FRONTEND_URL}/auth-fail?failCause=RegisterAccountExists`,
       );
     }
 
@@ -98,30 +98,30 @@ export const googleCallback = async (req: Request, res: Response) => {
 
     if (!userExists && type === 'login') {
       return res.redirect(
-        'http://localhost:5173/auth-fail?failCause=LoginAccountDoesntExist',
+        `${process.env.FRONTEND_URL}/auth-fail?failCause=LoginAccountDoesntExist`,
       );
     }
 
     if (type === 'login') {
       return res.redirect(
-        `http://localhost:5173/auth-success?successCause=SuccessfulLogin`,
+        `${process.env.FRONTEND_URL}/auth-success?successCause=SuccessfulLogin`,
       );
     }
     if (type === 'register') {
       return res.redirect(
-        `http://localhost:5173/auth-success?successCause=SuccessfulRegister`,
+        `${process.env.FRONTEND_URL}/auth-success?successCause=SuccessfulRegister`,
       );
     }
   } catch (error) {
     if (type === 'login') {
       console.error('GOOGLE CALLBACK ERROR', error);
       return res.redirect(
-        'http://localhost:5173/auth-fail?failCause=UnsuccessfulLogin',
+        `${process.env.FRONTEND_URL}/auth-fail?failCause=UnsuccessfulLogin`,
       );
     }
     if (type === 'register') {
       return res.redirect(
-        'http://localhost:5173/auth-fail?failCause=UnsuccessfulRegister',
+        `${process.env.FRONTEND_URL}/auth-fail?failCause=UnsuccessfulRegister`,
       );
     }
   } finally {
@@ -199,7 +199,7 @@ export const githubCallback = async (req: Request, res: Response) => {
       ]);
     } else if (userExists && type === 'register') {
       return res.redirect(
-        'http://localhost:5173/auth-fail?failCause=RegisterAccountExists',
+        `${process.env.FRONTEND_URL}/auth-fail?failCause=RegisterAccountExists`,
       );
     }
 
@@ -219,30 +219,30 @@ export const githubCallback = async (req: Request, res: Response) => {
 
     if (!userExists && type === 'login') {
       return res.redirect(
-        'http://localhost:5173/auth-fail?failCause=LoginAccountDoesntExist',
+        `${process.env.FRONTEND_URL}/auth-fail?failCause=LoginAccountDoesntExist`,
       );
     }
 
     if (type === 'login') {
       return res.redirect(
-        `http://localhost:5173/auth-success?successCause=SuccessfulLogin`,
+        `${process.env.FRONTEND_URL}/auth-success?successCause=SuccessfulLogin`,
       );
     }
     if (type === 'register') {
       return res.redirect(
-        `http://localhost:5173/auth-success?successCause=SuccessfulRegister`,
+        `${process.env.FRONTEND_URL}/auth-success?successCause=SuccessfulRegister`,
       );
     }
   } catch (error) {
     console.error('CALLBACK ERROR:', error);
     if (type === 'login') {
       return res.redirect(
-        'http://localhost:5173/auth-fail?failCause=UnsuccessfulLogin',
+        `${process.env.FRONTEND_URL}/auth-fail?failCause=UnsuccessfulLogin`,
       );
     }
     if (type === 'register') {
       return res.redirect(
-        'http://localhost:5173/auth-fail?failCause=UnsuccessfulRegister',
+        `${process.env.FRONTEND_URL}/auth-fail?failCause=UnsuccessfulRegister`,
       );
     }
   }
@@ -292,7 +292,9 @@ export const createGuestUser = async (
     const fingerprint = req.headers['fingerprint'] as string;
     console.log(`${fingerprint} [createGuestUser]`);
     if (!fingerprint) {
-      return res.status(400).json({ error: 'No fingerprint provided [createGuestUser]' });
+      return res
+        .status(400)
+        .json({ error: 'No fingerprint provided [createGuestUser]' });
     }
     req.fingerprint = fingerprint;
     const userData = await redisClient.exists(`guest:${fingerprint}`);
@@ -374,9 +376,7 @@ export const instantiateUser = async (
         [verifiedRefresh.email],
       );
       if (result.rowCount === 0) {
-        throw new Error(
-          "User not found in db [instantiateUser]",
-        );
+        throw new Error('User not found in db [instantiateUser]');
       }
       const userSubscription = result.rows[0].subscription;
       let monthlyCredits;
