@@ -44,7 +44,7 @@ Finally, to start the project in a new browser window, navigate to the frontend 
 To test out every feature this app has to offer, you will also have to complete the actions below
 
 ## Environment variables
-This app includes quite a few environment variables that need to be filled in so it works properly (put this inside the .env file inside the root folder)
+This app includes quite a few environment variables that need to be filled in for the app to work properly (put this inside the .env file inside the root folder)
 
 ```bash
 PORT - port of the backend server
@@ -80,6 +80,13 @@ And for tests, create a new file called .test.env inside the root folder and ass
 ```bash
 PGCONNECTIONSTRING - A connection string for a seperate database used for testing purposes. I recommend to use pgAdmin4 for creating databases, but it's for you to decide
 ```
+
+To run tests, navigate into your desired folder (backend or frontend) and run:
+```bash
+pnpm test
+```
+
+After some time you should see the results of those tests (because of known bug inside the integration test suite, one test might fail).
 
 ## Setting up Redis
 If you are on Windows and Redis is not available natively, you can use WSL or Docker in order for this to work. 
